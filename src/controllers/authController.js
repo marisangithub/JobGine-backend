@@ -3,13 +3,21 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 
-const generateToken = (id) => {
-  return jwt.sign(
-    { id },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
-  );
-};
+const generateToken =
+  (id, role) => {
+
+    return jwt.sign(
+      {
+        id,
+        role
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d"
+      }
+    );
+
+  };
 
 // Register
 exports.register = async (req, res) => {
@@ -73,7 +81,8 @@ exports.register = async (req, res) => {
           password,
           otp,
           otp_expires,
-          is_verified
+          is_verified,
+          role
         )
         VALUES
         (
@@ -82,12 +91,14 @@ exports.register = async (req, res) => {
           $3,
           $4,
           $5,
-          false
+          false,
+          'user'
         )
         RETURNING
         id,
         name,
-        email
+        email,
+        role
         `,
         [
           name,
@@ -256,12 +267,19 @@ if (
       });
     }
 
+    console.log("LOGIN RESPONSE:", {
+  id: user.id,
+  name: user.name,
+  email: user.email,
+  role: user.role
+});
     res.json({
-      token: generateToken(user.id),
+      token: generateToken(user.id, user.role),
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
 
@@ -278,7 +296,7 @@ exports.getMe = async (req, res) => {
   try {
 
     const result = await pool.query(
-      "SELECT id,name,email FROM users WHERE id = $1",
+      "SELECT id,name,email,role FROM users WHERE id = $1",
       [req.user.id]
     );
 
@@ -297,4 +315,120 @@ exports.getMe = async (req, res) => {
       message: "Server Error"
     });
   }
+};
+
+exports.getUsers = async (
+  req,
+  res
+) => {
+
+  try {
+
+    const result =
+      await pool.query(`
+        SELECT
+        id,
+        name,
+        email,
+        role,
+        is_verified
+        FROM users
+        ORDER BY id DESC
+      `);
+
+    res.json(
+      result.rows
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message:
+        "Server Error"
+    });
+
+  }
+
+};
+exports.updateRole =
+async (
+  req,
+  res
+) => {
+
+  try {
+
+    const {
+      id
+    } = req.params;
+
+    const {
+      role
+    } = req.body;
+
+    await pool.query(
+      `
+      UPDATE users
+      SET role = $1
+      WHERE id = $2
+      `,
+      [
+        role,
+        id
+      ]
+    );
+
+    res.json({
+      message:
+        "Role Updated"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message:
+        "Server Error"
+    });
+
+  }
+
+};
+exports.deleteUser =
+async (
+  req,
+  res
+) => {
+
+  try {
+
+    await pool.query(
+      `
+      DELETE FROM users
+      WHERE id = $1
+      `,
+      [
+        req.params.id
+      ]
+    );
+
+    res.json({
+      message:
+        "User Deleted"
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message:
+        "Server Error"
+    });
+
+  }
+
 };
