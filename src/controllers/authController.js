@@ -119,16 +119,6 @@ res.status(201).json({
   message: "OTP sent to email",
   email
 });
-
-    res.status(201).json({
-
-      message:
-        "OTP sent to email",
-
-      email
-
-    });
-
   } catch (error) {
   console.error("REGISTER ERROR:", error);
 
