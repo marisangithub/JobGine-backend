@@ -14,7 +14,10 @@ const sendOTP = async (
   email,
   otp
 ) => {
-
+console.log("BREVO_USER:", process.env.BREVO_USER);
+console.log("BREVO_PASS EXISTS:", !!process.env.BREVO_PASS);
+console.log("FROM:", "marisan.cleverso@gmail.com");
+  
   await transporter.sendMail({
 
     from: "marisan.cleverso@gmail.com",
@@ -36,7 +39,7 @@ const sendOTP = async (
       </div>
     `
   });
-
+console.log("EMAIL SENT:", info.messageId);
 };
 
 module.exports = {
