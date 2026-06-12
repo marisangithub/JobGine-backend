@@ -1,28 +1,34 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.BREVO_USER,
-    pass: process.env.BREVO_PASS,
-  },
-});
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+defaultClient.authentications["api-key"].apiKey =
+  process.env.BREVO_API_KEY;
+
+const apiInstance =
+  new SibApiV3Sdk.TransactionalEmailsApi();
 
 const sendOTP = async (email, otp) => {
-  try {
-    console.log("BREVO_USER:", process.env.BREVO_USER);
-    console.log("BREVO_PASS EXISTS:", !!process.env.BREVO_PASS);
-    console.log("FROM:", "marisan.cleverso@gmail.com");
 
-    const info = await transporter.sendMail({
-      from: "marisan.cleverso@gmail.com",
-      to: email,
-      subject: "Jobgine Email Verification",
-      html: `
+  const result =
+    await apiInstance.sendTransacEmail({
+
+      sender: {
+        email: "marisan.cleverso@gmail.com",
+        name: "JobGine"
+      },
+
+      to: [
+        {
+          email: email
+        }
+      ],
+
+      subject: "JobGine Email Verification",
+
+      htmlContent: `
         <div style="font-family:Arial">
-          <h2>Jobgine</h2>
+          <h2>JobGine</h2>
           <p>Your verification code is:</p>
           <h1>${otp}</h1>
           <p>This OTP expires in 10 minutes.</p>
@@ -30,13 +36,9 @@ const sendOTP = async (email, otp) => {
       `
     });
 
-    console.log("EMAIL SENT:", info.messageId);
-
-  } catch (error) {
-    console.error("BREVO ERROR:", error);
-    throw error;
-  }
+  console.log("EMAIL SENT:", result);
 };
+
 module.exports = {
   sendOTP
 };
