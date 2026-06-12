@@ -10,33 +10,33 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendOTP = async (
-  email,
-  otp
-) => {
-console.log("BREVO_USER:", process.env.BREVO_USER);
-console.log("BREVO_PASS EXISTS:", !!process.env.BREVO_PASS);
-console.log("FROM:", "marisan.cleverso@gmail.com");
-  
-const info = await transporter.sendMail({
-  from: "marisan.cleverso@gmail.com",
-  to: email,
-  subject: "Jobgine Email Verification",
-  html: `
-    <div style="font-family:Arial">
-      <h2>Jobgine</h2>
-      <p>Your verification code is:</p>
-      <h1>${otp}</h1>
-      <p>This OTP expires in 10 minutes.</p>
-    </div>
-  `
-});
+const sendOTP = async (email, otp) => {
+  try {
+    console.log("BREVO_USER:", process.env.BREVO_USER);
+    console.log("BREVO_PASS EXISTS:", !!process.env.BREVO_PASS);
+    console.log("FROM:", "marisan.cleverso@gmail.com");
 
-console.log("EMAIL SENT:", info.messageId);
-console.log("EMAIL SENT SUCCESS");
+    const info = await transporter.sendMail({
+      from: "marisan.cleverso@gmail.com",
+      to: email,
+      subject: "Jobgine Email Verification",
+      html: `
+        <div style="font-family:Arial">
+          <h2>Jobgine</h2>
+          <p>Your verification code is:</p>
+          <h1>${otp}</h1>
+          <p>This OTP expires in 10 minutes.</p>
+        </div>
+      `
+    });
 
+    console.log("EMAIL SENT:", info.messageId);
+
+  } catch (error) {
+    console.error("BREVO ERROR:", error);
+    throw error;
+  }
 };
-
 module.exports = {
   sendOTP
 };
