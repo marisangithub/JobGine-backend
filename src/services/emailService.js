@@ -1,13 +1,12 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp-relay.brevo.com",
   port: 587,
   secure: false,
-  requireTLS: true,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.BREVO_USER,
+    pass: process.env.BREVO_PASS,
   },
 });
 
@@ -18,17 +17,16 @@ const sendOTP = async (
 
   await transporter.sendMail({
 
-    from:
-      process.env.EMAIL_USER,
+    from: "Jobgine",
 
     to: email,
 
     subject:
-      "ResumeIQ Email Verification",
+      "Jobgine Email Verification",
 
     html: `
       <div style="font-family:Arial">
-        <h2>ResumeIQ</h2>
+        <h2>Jobgine</h2>
 
         <p>Your verification code is:</p>
 
