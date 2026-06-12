@@ -109,11 +109,11 @@ exports.register = async (req, res) => {
         ]
       );
 
-    // await sendOTP(
-    //   email,
-    //   otp
-    // );
-    console.log("OTP:", otp);
+    await sendOTP(
+      email,
+      otp
+    );
+
 
     res.status(201).json({
 
