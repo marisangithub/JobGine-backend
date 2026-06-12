@@ -40,6 +40,7 @@ console.log("FROM:", "marisan.cleverso@gmail.com");
     `
   });
 console.log("EMAIL SENT:", info.messageId);
+  console.log("EMAIL SENT SUCCESS");
 };
 
 module.exports = {
