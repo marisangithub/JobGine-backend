@@ -109,11 +109,16 @@ exports.register = async (req, res) => {
         ]
       );
 
-    await sendOTP(
-      email,
-      otp
-    );
+try {
+  await sendOTP(email, otp);
+} catch (error) {
+  console.error("EMAIL ERROR:", error);
+}
 
+res.status(201).json({
+  message: "OTP sent to email",
+  email
+});
 
     res.status(201).json({
 
