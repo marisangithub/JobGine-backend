@@ -130,15 +130,12 @@ res.status(201).json({
     });
 
   } catch (error) {
+  console.error("REGISTER ERROR:", error);
 
-    console.error(error);
-
-    res.status(500).json({
-      message:
-        "Server Error"
-    });
-
-  }
+  res.status(500).json({
+    message: error.message
+  });
+}
 
 };
 
