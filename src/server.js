@@ -1,5 +1,5 @@
 require("dotenv").config();
-import dns from "dns";
+const dns = require("dns");
 const app = require("./app");
 
 dns.setDefaultResultOrder("ipv4first");
