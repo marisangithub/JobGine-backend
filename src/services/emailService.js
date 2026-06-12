@@ -17,7 +17,7 @@ const sendOTP = async (
 
   await transporter.sendMail({
 
-    from: "Jobgine",
+    from: "marisan.cleverso@gmail.com",
 
     to: email,
 
